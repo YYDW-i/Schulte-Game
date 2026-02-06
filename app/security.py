@@ -1,3 +1,4 @@
+import passlib.handlers.argon2  # noqa: F401
 from passlib.context import CryptContext
 
 pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")

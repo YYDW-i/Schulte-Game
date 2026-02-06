@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-md mx-auto">
+  <div class="rounded-3xl bg-white/10 ring-1 ring-white/20 backdrop-blur-xl shadow-2xl p-6 lg:p-8">
+    <h1 class="text-2xl font-semibold">登录</h1>
+    <p class="text-sm text-slate-300 mt-1">欢迎回来，继续刷新你的最好成绩。</p>
+
+    {% if error %}
+      <div class="mt-4 rounded-2xl bg-rose-500/20 ring-1 ring-rose-300/30 px-4 py-3 text-sm">{{ error }}</div>
+    {% endif %}
+
+    <form class="mt-6 space-y-4" method="post" action="/login">
+      <div>
+        <label class="text-sm text-slate-300">邮箱</label>
+        <input name="email" type="email" required
+               class="mt-1 w-full rounded-2xl bg-white/10 ring-1 ring-white/15 px-4 py-3 outline-none focus:ring-indigo-300/40" />
+      </div>
+      <div>
+        <label class="text-sm text-slate-300">密码</label>
+        <input name="password" type="password" required
+               class="mt-1 w-full rounded-2xl bg-white/10 ring-1 ring-white/15 px-4 py-3 outline-none focus:ring-indigo-300/40" />
+      </div>
+      <button class="w-full rounded-2xl bg-indigo-500/30 ring-1 ring-indigo-300/30 px-4 py-3 font-semibold hover:bg-indigo-500/40 transition">
+        登录
+      </button>
+    </form>
+
+    <p class="text-sm text-slate-300 mt-4">
+      没有账号？<a class="text-indigo-200 hover:text-indigo-100 underline" href="/register">去注册</a>
+    </p>
+  </div>
+</div>
+{% endblock %}

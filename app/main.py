@@ -20,7 +20,19 @@ app.add_middleware(
     https_only=False,  # 上线 HTTPS 后改 True
 )
 
-templates = Jinja2Templates(directory="app/templates")
+import sys
+from pathlib import Path
+from fastapi.templating import Jinja2Templates
+
+def templates_dir() -> Path:
+    # PyInstaller 打包后：sys._MEIPASS 指向 bundle 目录（onedir 新版通常是 _internal）
+    if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
+        return Path(sys._MEIPASS) / "app" / "templates"
+    # 开发环境：app/main.py 所在目录就是 app/
+    return Path(__file__).resolve().parent / "templates"
+
+templates = Jinja2Templates(directory=str(templates_dir()))
+
 
 def current_user(request: Request, db: Session) -> User | None:
     uid = request.session.get("user_id")
