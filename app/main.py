@@ -4,7 +4,7 @@ from fastapi.templating import Jinja2Templates
 from starlette.middleware.sessions import SessionMiddleware
 from sqlalchemy.orm import Session
 from sqlalchemy import select, func
-
+from datetime import timezone
 from .db import Base, engine, get_db
 from .models import User, SchulteRun
 from .security import hash_password, verify_password
@@ -186,3 +186,15 @@ async def submit_run(request: Request, db: Session = Depends(get_db)):
         "best_adjusted": float(best) if best is not None else None,
         "avg_adjusted": float(avg) if avg is not None else None,
     }
+def utciso(dt):
+    # 兼容老数据：如果是 naive，就当作 UTC
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    else:
+        dt = dt.astimezone(timezone.utc)
+
+    # 输出 ISO 8601；+00:00 和 Z 都是 UTC 的合法表示
+    s = dt.isoformat()
+    return s.replace("+00:00", "Z")
+
+templates.env.filters["utciso"] = utciso

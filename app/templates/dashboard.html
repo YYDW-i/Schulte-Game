@@ -59,7 +59,10 @@
       <tbody class="text-slate-100">
         {% for r in recent %}
         <tr class="border-t border-white/10">
-          <td class="py-2">{{ r.created_at }}</td>
+          <td class="py-2 text-sm text-white/80">
+            <span class="js-local-time" data-utc="{{ r.created_at | utciso }}">—</span>
+          </td>
+
           <td class="py-2">{{ "%.2f"|format(r.elapsed_seconds) }}</td>
           <td class="py-2">{{ r.errors }}</td>
           <td class="py-2 font-semibold">{{ "%.2f"|format(r.adjusted_seconds) }}</td>
@@ -72,4 +75,20 @@
     </table>
   </div>
 </div>
+
+<script>
+  (function () {
+    const nodes = document.querySelectorAll(".js-local-time[data-utc]");
+    const fmt = new Intl.DateTimeFormat(undefined, {
+      year: "numeric", month: "2-digit", day: "2-digit",
+      hour: "2-digit", minute: "2-digit", second: "2-digit",
+    });
+
+    nodes.forEach(el => {
+      const iso = el.dataset.utc;
+      const d = new Date(iso);   // 解析带 Z / +00:00 的 ISO 字符串
+      el.textContent = isNaN(d.getTime()) ? "—" : fmt.format(d);
+    });
+  })();
+</script>
 {% endblock %}
