@@ -33,7 +33,7 @@
 
 解压后双击运行：
 ```
-Schulte5x5.exe
+SchulteGame.exe
 ```
 程序会自动启动本地服务并打开浏览器：
 ```
@@ -48,9 +48,9 @@ http://127.0.0.1:8000/login
 
 ### 方式 2：终端启动（Windows / macOS / Linux 通用）
 
-进入项目根目录（能看到 app/、requirements.txt 的那个目录）
+进入项目根目录（能看到 app_scr/、requirements.txt 的那个目录）
 ```
-cd schulte-web
+cd Schulte-Game
 ```
 
 创建并激活虚拟环境
@@ -74,7 +74,7 @@ pip install -r requirements.txt
 
 启动服务
 ```
-uvicorn app.main:app --reload
+python -m uvicorn app.main:app --reload
 ```
 
 打开浏览器访问
@@ -117,23 +117,28 @@ pip install pyinstaller
 
 Windows PowerShell：
 ```
-python -m PyInstaller --noconfirm --clean --onedir --name Schulte5x5 `
-  --add-data "app/templates;app/templates" `
-  launcher.py
+python -m PyInstaller --onefile --console --clean --name SchulteGameDebug `
+  --collect-submodules fastapi `
+  --collect-submodules starlette `
+  --collect-submodules sqlalchemy `
+  --collect-submodules passlib `
+  --hidden-import itsdangerous `
+  --hidden-import jinja2 `
+  launcher_debug.py
 ```
 
 生成路径通常为：
 ```
-dist/Schulte5x5/Schulte5x5.exe
+dist/SchulteGameDebug.exe
 ```
-💡 提示：如果出现 TemplateNotFound，通常是模板目录没被正确打包或运行时路径没对齐。
-维护者可在 app/main.py 中用 sys._MEIPASS 处理 PyInstaller 的资源路径定位（已在项目内适配）。
+💡 提示：要先把这个exe文件移动到根目录，与app_src同级！！！如果出现 TemplateNotFound，通常是模板目录没被正确打包或运行时路径没对齐。
+维护者可在 app_src/app/main.py 中用 sys._MEIPASS 处理 PyInstaller 的资源路径定位（已在项目内适配）。
 
 ## 🧯 常见问题（FAQ）
 ### 1）打开网页显示 Internal Server Error
 
 终端里如果看到 TemplateNotFound: login.html
-✅ 说明模板目录未找到 → 检查打包是否包含 app/templates，以及运行时模板路径是否正确。
+✅ 说明模板目录未找到 → 检查打包是否包含 app_src/app/templates，以及运行时模板路径是否正确。
 
 ### 2）EXE 启动时报缺少某个模块
 
